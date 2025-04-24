@@ -6,8 +6,10 @@ const DadoDelete=(props)=>{
         fetch(`http://10.68.153.74:3000/delete/${id}`,{
           method:'DELETE',})
           .then((res)=> res.json())
-          .then((json)=> console.log(json))
+          .then((json)=> console.log(json));
+          props.onDelete(id);
     }
+
     return(
         <View style={{border:'1px solid black', 
                     margin:5,

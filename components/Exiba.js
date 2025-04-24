@@ -1,12 +1,22 @@
-import React from "react";
-import { View, Text, FlatList, Button } from "react-native-web";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, TextInput } from "react-native-web";
 import DadoDelete from "./Delete";
 
 const DadoExiba=(props)=>{
+    
+    const [dados, setDados] = useState(props.campo);
+
+    useEffect(() => {
+        setDados(props.campo);
+    }, [props.campo]);
+
+    const handleDelete = (deleteId) => {
+        setDados(dados.filter(item => item._id !== deleteId));
+    }
     return(
         <View>
             <FlatList 
-                data={props.campo}
+                data={dados}
                   renderItem={({item})=>{
                     return(
                     <View style={{
@@ -18,11 +28,14 @@ const DadoExiba=(props)=>{
                         
                         <Text> id: {item._id}</Text>
                         <Text> nome: {item.name}</Text>
-                        <DadoDelete id={item._id}/>
+                        <Text> idade: {item.age}</Text>
+                        <Text> cidade: {item.city}</Text>
+                        <DadoDelete id={item._id} onDelete={handleDelete} />
                         
                     </View>
                     )
                   }}
+                  keyExtractor={item => item._id}
             />
         </View>
     )

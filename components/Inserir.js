@@ -2,14 +2,18 @@ import React from "react";
 import { View, Text, TextInput, Button } from "react-native-web";
 import { useState } from "react";
 
-const DadoInserir=()=>{
-    const [nome, setNome] = useState(null);
+const DadoInserir=({ cadastroSucedido })=>{
+    const [nome, setNome] = useState("");
+    const [idade, setIdade] = useState("");
+    const [cidade, setCidade] = useState("");
 
     const addUser = ()=>{
         fetch('http://10.68.153.74:3000/add/',{
           method: 'POST',
           body:JSON.stringify({
-            name: nome
+            name: nome,
+            age: idade,
+            city:cidade
         }),
           headers:{
             'Content-Type': 'application/json; charset=utf-8'
@@ -18,7 +22,11 @@ const DadoInserir=()=>{
         }).then(
           (resp)=>{resp.json}
         ).then((data) => {
-          console.log("Success:", data)
+          console.log("Success:", data);
+          if (cadastroSucedido) {
+            cadastroSucedido(data);
+          }
+          
         }
         )
       }
@@ -31,6 +39,14 @@ const DadoInserir=()=>{
             <Text>Nome</Text>
             <TextInput 
                 onChangeText={(text)=>{setNome(text)}}
+            />
+            <Text>Idade</Text>
+            <TextInput 
+                onChangeText={(text)=>{setIdade(text)}}
+            />
+            <Text>Cidade</Text>
+            <TextInput 
+                onChangeText={(text)=>{setCidade(text)}}
             />
             <Button 
                 title="CADASTRAR"
