@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import DadoExiba from './components/Exiba';
 import DadoInserir from './components/Inserir';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 export default function App() {
   // sera utilizada para armazenar os dados
@@ -11,7 +12,7 @@ export default function App() {
 
   // renderizar
   useEffect(()=>{
-    fetch('http://10.68.153.74:3000', {
+    fetch('http://10.68.153.209:3000', {
     }).then(
       (resp)=>{return resp.json()}
     ).then(
@@ -27,13 +28,15 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-  
-      <DadoInserir cadastroSucedido={handleCadastro} />
-      <DadoExiba campo = {campos} />
-
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+    
+        <DadoInserir cadastroSucedido={handleCadastro} />
+        <DadoExiba campo = {campos} />
+    
+        <StatusBar style="auto" />
+      </View>
+    </PaperProvider>
   );
 }
 

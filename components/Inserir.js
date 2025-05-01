@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput, Button } from "react-native-web";
+import { Card, TextInput, Button, Title } from "react-native-paper";
 import { useState } from "react";
 
 const DadoInserir=({ cadastroSucedido })=>{
@@ -8,7 +8,7 @@ const DadoInserir=({ cadastroSucedido })=>{
     const [cidade, setCidade] = useState("");
 
     const addUser = ()=>{
-        fetch('http://10.68.153.74:3000/add/',{
+        fetch('http://10.68.153.209:3000/add/',{
           method: 'POST',
           body:JSON.stringify({
             name: nome,
@@ -32,27 +32,39 @@ const DadoInserir=({ cadastroSucedido })=>{
       }
 
     return(
-        <View style={{border:'1px solid black',
-                     margin:3,
-                     padding:6
-                     }}>
-            <Text>Nome</Text>
+        <Card style={{ margin:10, padding:15 }}>
+          <Card.Content>
+            <Title>Inserir Um Novo Usuário</Title>
+
+            <TextInput
+                label="Nome"
+                value={nome}
+                onChangeText={setNome}
+                mode="outlined"
+                style={{ marginBottom: 10 }}
+            />
+
             <TextInput 
-                onChangeText={(text)=>{setNome(text)}}
+                label="Idade"
+                value={idade}
+                onChangeText={setIdade}
+                mode="outlined"
+                style={{ marginBottom: 10 }}
+                keyboardType="numeric"
             />
-            <Text>Idade</Text>
+
             <TextInput 
-                onChangeText={(text)=>{setIdade(text)}}
+                label="Cidade"
+                value={cidade}
+                onChangeText={setCidade}
+                mode="outlined"
+                style={{ marginBottom: 10 }}
             />
-            <Text>Cidade</Text>
-            <TextInput 
-                onChangeText={(text)=>{setCidade(text)}}
-            />
-            <Button 
-                title="CADASTRAR"
-                onPress={()=>{addUser()}}
-            />
-        </View>
+            <Button mode="contained" onPress={addUser}>
+                Cadastrar
+            </Button>
+          </Card.Content>
+        </Card>
     );
 }
 

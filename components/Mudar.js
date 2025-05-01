@@ -1,46 +1,73 @@
 import React, { useState } from "react";
-import { View, TextInput, Pressable } from "react-native";
+import { View } from "react-native";
+import { Card, TextInput, Button, Text } from "react-native-paper";
 
-const DadoEditar = ({ item, onSave, onCancel }) => {
-    const [novoNome, setNome] = useState(item.name);
-    const [novoIdade, setIdade] = useState(item.age);
-    const [novoCidade, setCidade] = useState(item.city);
+const DadoEditar = ({ name, age, city, id, onUpdate }) => {
+    const [editando, setEditando] = useState(false);
+    const [nome, setNome] = useState(name);
+    const [idade, setIdade] = useState(age);
+    const [cidade, setCidade] = useState(city);
 
     const handleSalvar = () => {
-        onSave(item._id, setNome, setIdade, setCidade);
+    fetch(`http://10.68.153.209:3000/update/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body:JSON.stringify({
+        name: nome,
+        age: idade,
+        city: cidade
+      })
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        if (json.status === 'alterado') {
+            onUpdate({ _id: id, name: nome, age: idade, city: cidade });
+            setEditando(false);
+        } 
+      });
     };
 
     return(
-        <View>
-            <View style={{
-                margin:20,
-                backgroundColor:"#00FFFF",
-                padding:5,
-                border:'1px solid #ddd'
-            }}>
-                
-                <TextInput 
-                    value={novoNome}
-                    onChangeText={setNome}
-                    placeholder="Editar Nome"    
-                />
-                <TextInput 
-                    value={novoIdade}
-                    onChangeText={setIdade}
-                    placeholder="Editar Idade"    
-                />
-                <TextInput 
-                    value={novoCidade}
-                    onChangeText={setCidade}
-                    placeholder="Editar Cidade"    
-                />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Pressable title="Salvar" onPress={handleSalvar} />
-                    <Pressable title="Cancelar" onPress={onCancel} />
+            <Card style={{ margin: 10, padding: 10 }}>
+                {editando ? (
+                <View>
+                    <TextInput 
+                        value={nome}
+                        onChangeText={setNome}
+                        placeholder="Editar Nome" 
+                        mode="outlined"
+                        style={{ marginBottom: 10 }}   
+                    />
+                    <TextInput 
+                        value={idade}
+                        onChangeText={setIdade}
+                        placeholder="Editar Idade"
+                        mode="outlined"
+                        style={{ marginBottom: 10 }}    
+                    />
+                    <TextInput 
+                        value={cidade}
+                        onChangeText={setCidade}
+                        placeholder="Editar Cidade"  
+                        mode="outlined"
+                        style={{ marginBottom: 10 }}  
+                    />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                          <Button onPress={handleSalvar} 
+                          >Salvar</Button>
+                          <Button onPress={() => setEditando(false)} 
+                          >Cancelar</Button>
+                    </View>
                 </View>
-                
-            </View>
-        </View>
+                    ) : (
+                        <View>
+                        <Button onPress={() => setEditando(true)}>Editar</Button>
+                        </View>
+                    )}
+            </Card>
     );
 };
 

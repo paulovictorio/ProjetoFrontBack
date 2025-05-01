@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TextInput } from "react-native-web";
+import { ScrollView } from "react-native-web";
+import { Card, Text, Title, Paragraph } from 'react-native-paper';
 import DadoDelete from "./Delete";
+import DadoEditar from "./Mudar";
 
 const DadoExiba=(props)=>{
     
@@ -13,31 +15,40 @@ const DadoExiba=(props)=>{
     const handleDelete = (deleteId) => {
         setDados(dados.filter(item => item._id !== deleteId));
     }
+
+    const handleUpdate = (updateItem) => {
+        setDados(prevDados =>
+            prevDados.map(item =>
+                item._id === updateItem._id ? updateItem : item
+            )
+        );
+    }
+
     return(
-        <View>
-            <FlatList 
-                data={dados}
-                  renderItem={({item})=>{
-                    return(
-                    <View style={{
-                        margin:20,
-                        backgroundColor:"#00FFFF",
-                        padding:5,
-                        border:'1px solid #ddd'
-                    }}>
-                        
-                        <Text> id: {item._id}</Text>
-                        <Text> nome: {item.name}</Text>
-                        <Text> idade: {item.age}</Text>
-                        <Text> cidade: {item.city}</Text>
-                        <DadoDelete id={item._id} onDelete={handleDelete} />
-                        
-                    </View>
-                    )
-                  }}
-                  keyExtractor={item => item._id}
-            />
-        </View>
-    )
-}
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
+                {dados.map((item) => (
+                    <Card key={item._id} style={{ marginBottom: 15 }}>
+                        <Card.Content>
+                            <Title>Usuário</Title>
+                            <Paragraph>ID: {item._id}</Paragraph>
+                            <Text>Nome: {item.name}</Text>
+                            <Text>Idade: {item.age}</Text>
+                            <Text>Cidade: {item.city}</Text>
+                        </Card.Content>
+
+                        <Card.Actions style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <DadoDelete id={item._id} onDelete={handleDelete} />
+                            <DadoEditar 
+                                id={item._id}
+                                name={item.name}
+                                age={item.age}
+                                city={item.city}
+                                onUpdate={handleUpdate}
+                            />
+                        </Card.Actions>
+                    </Card>
+                    ))}
+            </ScrollView> 
+    );
+};
 export default DadoExiba;
